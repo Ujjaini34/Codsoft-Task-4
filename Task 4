@@ -1,0 +1,65 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load the dataset
+data = pd.read_csv(r"C:\Users\Ujjaini\OneDrive\Desktop\CodSoft\advertising (1).csv")
+
+# Display the first few rows of the dataset
+print(data.head())
+
+# Summary statistics
+print(data.describe())
+
+# Visualize the data
+sns.pairplot(data, x_vars=['TV', 'Radio', 'Newspaper'], y_vars='Sales', height=7, aspect=0.7, kind='reg')
+plt.show()
+
+# Correlation matrix
+corr_matrix = data.corr()
+sns.heatmap(corr_matrix, annot=True)
+plt.show()
+
+# Features and target variable
+X = data[['TV', 'Radio', 'Newspaper']]
+y = data['Sales']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize the model
+model = LinearRegression()
+
+# Train the model
+model.fit(X_train, y_train)
+
+# Model coefficients
+print('Coefficients:', model.coef_)
+print('Intercept:', model.intercept_)
+
+# Predicting sales on the test set
+y_pred = model.predict(X_test)
+
+# Model evaluation
+mse = mean_squared_error(y_test, y_pred)
+r2 = r2_score(y_test, y_pred)
+
+print('Mean Squared Error:', mse)
+print('R-squared:', r2)
+
+# Plotting actual vs predicted sales
+plt.scatter(y_test, y_pred)
+plt.xlabel('Actual Sales')
+plt.ylabel('Predicted Sales')
+plt.title('Actual vs Predicted Sales')
+plt.show()
+
+# New data for prediction
+new_data = np.array([[230.1, 37.8, 69.2], [44.5, 39.3, 45.1]])
+new_predictions = model.predict(new_data)
+
+print('Predicted Sales:', new_predictions)
